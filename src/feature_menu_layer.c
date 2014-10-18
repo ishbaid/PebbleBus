@@ -19,6 +19,9 @@ static int current_icon = 0;
 // You can draw arbitrary things in a menu item such as a background
 static GBitmap *menu_background;
 
+//header text
+const Layer *header;
+
 // A callback is used to specify the amount of sections of menu items
 // With this, you can dynamically add and remove sections
 static uint16_t menu_get_num_sections_callback(MenuLayer *menu_layer, void *data) {
@@ -71,6 +74,8 @@ static void menu_draw_row_callback(GContext* ctx, const Layer *cell_layer, MenuI
         case 0:
           // This is a basic menu item with a title and subtitle
           menu_cell_basic_draw(ctx, cell_layer, "Basic Item", "With a subtitle", NULL);
+        //define header  
+        header = cell_layer;
           break;
 
         case 1:
@@ -163,7 +168,55 @@ void window_unload(Window *window) {
   gbitmap_destroy(menu_background);
 }
 
+////////////////////////Handles messages
+ void out_sent_handler(DictionaryIterator *sent, void *context) {
+   // outgoing message was delivered
+ }
+
+
+ void out_failed_handler(DictionaryIterator *failed, AppMessageResult reason, void *context) {
+   // outgoing message failed
+ }
+
+  
+  enum {
+       AKEY_NUMBER,
+       AKEY_TEXT,
+  };
+
+ void in_received_handler(DictionaryIterator *iter, void *context) {
+   // incoming message received
+  // Check for fields you expect to receive
+  int KEY = 1; 
+  Tuple *text_tuple = dict_find(iter, KEY);
+
+  // Act on the found fields received
+  if (text_tuple) {
+    
+      menu_cell_basic_header_draw(context, header, text_tuple->value->cstring);
+      APP_LOG(APP_LOG_LEVEL_DEBUG, "Text: %s", text_tuple->value->cstring);
+  }
+ }
+
+
+ void in_dropped_handler(AppMessageResult reason, void *context) {
+   // incoming message dropped
+ }
+
 int main(void) {
+  
+  //set up messages
+   app_message_register_inbox_received(in_received_handler);
+   app_message_register_inbox_dropped(in_dropped_handler);
+   app_message_register_outbox_sent(out_sent_handler);
+   app_message_register_outbox_failed(out_failed_handler);
+  
+  //
+   const uint32_t inbound_size = 64;
+   const uint32_t outbound_size = 64;
+   app_message_open(inbound_size, outbound_size);
+  
+  
   window = window_create();
 
   // Setup the window handlers
