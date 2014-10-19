@@ -8,8 +8,28 @@ TextLayer *header;
 // You have more control than with a simple menu layer
 
 static int counter = 0;
+int arrivalTimes[5];
 
 static char *title;
+
+char *answer[]={"Commuter Southbound",
+ "Commuter Northbound",
+ "Northwood",
+"Bursley-Baits",
+"Bursley-Baits (Nights)",
+"Intercampus to East Campus"
+"Intercampus to NIB",
+"Mitchell-Glazier to Glazier and VA",
+"KMS Shuttle",
+"Oxford Shuttle",
+"Diag to Diag express"
+"Commuter Northbound (Nights)"
+"Oxford Loop to Diag to Diag Express",
+"North Campus",
+"Bursley-Baits",
+"Northwood",
+"Oxford Shuttle"};
+
 
 // Each section has a number of items;  we use a callback to specify this
 // You can also dynamically add and remove items using this
@@ -77,28 +97,37 @@ void window_unload(Window *window) {
 
 
       Tuple *text_tuple; 
+      PebbleTuple tuple;
       switch(counter){
 
         case(0):
+          text_tuple = dict_find(iter, 0);
+            if(text_tuple){
 
-        text_tuple = dict_find(iter, 0);
-        title = malloc(text_tuple->length);
-        strncpy(title, text_tuple->value->cstring, text_tuple->length);
-        APP_LOG(APP_LOG_LEVEL_DEBUG, "Title: %s", title);
+              title = malloc(text_tuple->length);
+              strncpy(title, text_tuple->value->cstring, text_tuple->length);
+              APP_LOG(APP_LOG_LEVEL_DEBUG, "Title: %s", title);
+            }
+
         break;
         case(1):
 
-        APP_LOG(APP_LOG_LEVEL_DEBUG, "Not active rn");
+          tuple = getTuple(key, PebbleTuple.TupleType.INT);
+          if(tuple)
+            APP_LOG(APP_LOG_LEVEL_DEBUG, "Route Size is %i", tuple.value);
 
         break;
         case(2):
 
-        APP_LOG(APP_LOG_LEVEL_DEBUG, "Not active rn");
+            APP_LOG(APP_LOG_LEVEL_DEBUG, "CNot active rn %i", counter);
+        break;
+        case(3):
 
+            APP_LOG(APP_LOG_LEVEL_DEBUG, "ANot active rn %i", counter);
         break;
         default:
 
-        APP_LOG(APP_LOG_LEVEL_DEBUG, "Default");
+            APP_LOG(APP_LOG_LEVEL_DEBUG, "Default");
         break;
 
       };
