@@ -45,88 +45,6 @@ char *routes[]={"Commuter Southbound",
 "Oxford Shuttle"};
 
 
-// scroll_layer for when no vitamins are needed
-void scroll_NoneNeeded(){
-  
-  Layer *window_layer = window_get_root_layer(window);
-  GRect bounds = layer_get_frame(window_layer);
-  GRect max_text_bounds = GRect(0, 60, bounds.size.w, 2000);
-
-  // Initialize the scroll layer
-  scroll_layer = scroll_layer_create(bounds);
-
-  // This binds the scroll layer to the window so that up and down map to scrolling
-  // You may use scroll_layer_set_callbacks to add or override interactivity
-  scroll_layer_set_click_config_onto_window(scroll_layer, window);
-
-  // Initialize the text layer
-  text_layer = text_layer_create(max_text_bounds);
-  //A notice
-
-
-  static char buf[] = "OMG, this is pretty ridiculous";
-
-  snprintf(buf, sizeof(buf), "%d", arrivalTimes[0]);
-  
-  text_layer_set_text(text_layer, buf);  
-
-  // Change the font to a nice readable one
-  // This is system font; you can inspect pebble_fonts.h for all system fonts
-  // or you can take a look at feature_custom_font to add your own font
-  text_layer_set_font(text_layer, fonts_get_system_font(FONT_KEY_GOTHIC_24_BOLD));
-
-  // Trim text layer and scroll content to fit text box
-  GSize max_size = text_layer_get_content_size(text_layer);
-  text_layer_set_size(text_layer, max_size);
-  scroll_layer_set_content_size(scroll_layer, GSize(bounds.size.w, max_size.h + vert_scroll_text_padding));
-
-  // Add the layers for display
-  scroll_layer_add_child(scroll_layer, text_layer_get_layer(text_layer));
-
-  layer_add_child(window_layer, scroll_layer_get_layer(scroll_layer));
-  
-}
-  
-
-
-//initializes scroll for vitamins needed
-void scroll_init(){
-  
-  Layer *window_layer = window_get_root_layer(window);
-  GRect bounds = layer_get_frame(window_layer);
-  GRect max_text_bounds = GRect(0, 0, bounds.size.w, 2000);
-
-  // Initialize the scroll layer
-  scroll_layer = scroll_layer_create(bounds);
-
-  // This binds the scroll layer to the window so that up and down map to scrolling
-  // You may use scroll_layer_set_callbacks to add or override interactivity
-  //THE ORDER MATTERS OF WHICH FUNCTION IS CALLED FIRST
- 
-  scroll_layer_set_click_config_onto_window(scroll_layer, window);
-
-
-  // Initialize the text layer
-  text_layer = text_layer_create(max_text_bounds);
-
-
-  // Change the font to a nice readable one
-  // This is system font; you can inspect pebble_fonts.h for all system fonts
-  // or you can take a look at feature_custom_font to add your own font
-  text_layer_set_font(text_layer, fonts_get_system_font(FONT_KEY_GOTHIC_24_BOLD));
-
-  // Trim text layer and scroll content to fit text box
-  GSize max_size = text_layer_get_content_size(text_layer);
-  text_layer_set_size(text_layer, max_size);
-  scroll_layer_set_content_size(scroll_layer, GSize(bounds.size.w, max_size.h + vert_scroll_text_padding));
-
-  // Add the layers for display
-  scroll_layer_add_child(scroll_layer, text_layer_get_layer(text_layer));
-
-  layer_add_child(window_layer, scroll_layer_get_layer(scroll_layer));
-  
-}
-
 
 // This initializes the menu upon window load
 void window_load(Window *window) {
@@ -249,23 +167,10 @@ void window_unload(Window *window) {
                 APP_LOG(APP_LOG_LEVEL_DEBUG, "%i is %i", i, buses[i]);
                 if(buses[i] >= 0 && buses[i] < 19){
 
-                  //strcat(allTimes, routes[buses[i]]);
-                  
-                 // char a[10];
-                  //itoa(arrivalTimes[i], a, 10);
-                  //char[]a = " ";
-                  //strcat(allTimes, a);
-                  //char a[20];
-                  //sprintf(a, "%d", arrivalTimes[i]);
-                  //itoa(arrivalTimes[i], allTimes, 10);
-                  //strcat(allTimes, boost::lexical_cast<std::string>(arrivalTimes[i])
-                  //strcat(allTimes, "\n");
                 }
-                
 
             }
 
-              scroll_NoneNeeded();
         break;
         default:
 
