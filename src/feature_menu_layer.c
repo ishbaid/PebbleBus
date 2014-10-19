@@ -8,7 +8,8 @@ TextLayer *header;
 // You have more control than with a simple menu layer
 
 static int counter = 0;
-int arrivalTimes[5];
+static int *arrivalTimes;
+static int *buses;
 
 static char *title;
 
@@ -26,6 +27,7 @@ char *answer[]={"Commuter Southbound",
 "Commuter Northbound (Nights)"
 "Oxford Loop to Diag to Diag Express",
 "North Campus",
+"Night Owl",
 "Bursley-Baits",
 "Northwood",
 "Oxford Shuttle"};
@@ -86,6 +88,9 @@ void window_unload(Window *window) {
 
       Tuple *text_tuple; 
       Tuple *tuple;
+      Tuple *tuple2;
+      Tuple *tuple3;
+      int size = 0;
       int i = 0;
       switch(counter){
 
@@ -95,31 +100,55 @@ void window_unload(Window *window) {
 
               title = malloc(text_tuple->length);
               strncpy(title, text_tuple->value->cstring, text_tuple->length);
+              text_layer_set_text(header, title);
+              layer_add_child(window_get_root_layer(window), text_layer_get_layer(header));
               APP_LOG(APP_LOG_LEVEL_DEBUG, "Title: %s", title);
             }
 
         break;
         case(1):
 
-            APP_LOG(APP_LOG_LEVEL_DEBUG, "Route Size is ");
+            tuple = dict_find(iter, 0);
+            if(tuple){
+
+              size = tuple->value->int32;
+              APP_LOG(APP_LOG_LEVEL_DEBUG, "Route Size is %i", size);
+            }
+            
 
         break;
         case(2):
 
-            // tuple = dict_find(iter, 0);
-            // while (tuple && i < 5) {
+            while (tuple2) {
 
-            //   arrivalTimes[i] = tuple->data;
-            //   tuple = dict_read_next(&iter);
-            //   i ++;
-            // }
+               *arrivalTimes ++ = tuple2->value->int32;
 
+               tuple2 = dict_read_next(iter);
+               i ++;
+            }
 
-            APP_LOG(APP_LOG_LEVEL_DEBUG, "CNot active rn %i", counter);
+            for(i = 0; i < 5; i ++){
+
+                APP_LOG(APP_LOG_LEVEL_DEBUG, "%i is %i", i, arrivalTimes[i]);
+
+            }
+
         break;
         case(3):
 
-            APP_LOG(APP_LOG_LEVEL_DEBUG, "ANot active rn %i", counter);
+            tuple3 = dict_find(iter, 0);
+            while (tuple3 && i < 5) {
+
+               *buses ++ = tuple3->value->int32;
+               tuple3 = dict_read_next(iter);
+               i ++;
+            }
+
+            for(i = 0; i < 5; i ++){
+
+                APP_LOG(APP_LOG_LEVEL_DEBUG, "%i is %i", i, buses[i]);
+
+            }
         break;
         default:
 
@@ -140,6 +169,10 @@ void window_unload(Window *window) {
 
 int main(void) {
   
+
+  arrivalTimes = (int *)malloc(sizeof(int)*5);
+  buses = (int *)malloc(sizeof(int)*5);
+
   //set up messages
    app_message_register_inbox_received(in_received_handler);
    app_message_register_inbox_dropped(in_dropped_handler);
