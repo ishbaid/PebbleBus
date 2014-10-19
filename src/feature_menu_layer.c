@@ -13,6 +13,8 @@ static MenuLayer *menu_layer;
 static MenuLayer *n_campus_layer;
 static MenuLayer *c_campus_layer;
 
+static char *title;
+
 // Each section has a number of items;  we use a callback to specify this
 // You can also dynamically add and remove items using this
 static uint16_t menu_get_num_rows_callback(MenuLayer *menu_layer, uint16_t section_index, void *data) {
@@ -34,7 +36,7 @@ static void menu_draw_row_callback(GContext* ctx, const Layer *cell_layer, MenuI
       switch (cell_index->row) {
         case 0:
           // This is a basic menu item with a title
-          menu_cell_basic_draw(ctx, cell_layer, "North Campus", NULL, NULL);
+          menu_cell_basic_draw(ctx, cell_layer, title, NULL, NULL);
           break;
         
         case 1:
@@ -82,6 +84,8 @@ void window_load(Window *window) {
   menu_layer_set_click_config_onto_window(menu_layer, window);
 
   // Add it to the window for display
+  title = malloc(14);
+  title = "Bus Stop Name";
   layer_add_child(window_layer, menu_layer_get_layer(menu_layer));
 }
 
@@ -117,7 +121,13 @@ void window_unload(Window *window) {
     
       
       APP_LOG(APP_LOG_LEVEL_DEBUG, "Text: %s", text_tuple->value->cstring);
+      
+      free(title);
+      title = malloc(text_tuple->length);
+      strncpy(title, text_tuple->value->cstring, text_tuple->length);
+      menu_layer_reload_data(n_campus_layer);
   }
+
  }
 
 
