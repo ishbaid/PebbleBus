@@ -31,21 +31,10 @@ char *answer[]={"Commuter Southbound",
 "Oxford Shuttle"};
 
 
-// Each section has a number of items;  we use a callback to specify this
-// You can also dynamically add and remove items using this
-
-
-
-
 
 // This initializes the menu upon window load
 void window_load(Window *window) {
 
-  // Now we prepare to initialize the menu layer
-  // We need the bounds to specify the menu layer's viewport size
-  // In this case, it'll be the same as the window's
-  //Layer *window_layer = window_get_root_layer(window);
-  //GRect bounds = {0, 0, };
 
   header = text_layer_create(GRect(0, 0 , 144, 60));
 
@@ -95,9 +84,9 @@ void window_unload(Window *window) {
 
   }*/
 
-
       Tuple *text_tuple; 
-      PebbleTuple tuple;
+      Tuple *tuple;
+      int i = 0;
       switch(counter){
 
         case(0):
@@ -112,12 +101,19 @@ void window_unload(Window *window) {
         break;
         case(1):
 
-          tuple = getTuple(key, PebbleTuple.TupleType.INT);
-          if(tuple)
-            APP_LOG(APP_LOG_LEVEL_DEBUG, "Route Size is %i", tuple.value);
+            APP_LOG(APP_LOG_LEVEL_DEBUG, "Route Size is ");
 
         break;
         case(2):
+
+            // tuple = dict_find(iter, 0);
+            // while (tuple && i < 5) {
+
+            //   arrivalTimes[i] = tuple->data;
+            //   tuple = dict_read_next(&iter);
+            //   i ++;
+            // }
+
 
             APP_LOG(APP_LOG_LEVEL_DEBUG, "CNot active rn %i", counter);
         break;
